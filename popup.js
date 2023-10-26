@@ -12,16 +12,27 @@ document.getElementById("liftTemplate").addEventListener("click", () => revealTe
 document.getElementById("prepareButton").addEventListener("click", movetoPopUP);
 
 
-//Buttons for button things
+//Buttons for manually choosing the selection. Sorta depreciated with the new updates to contentScript.
+document.getElementById("dispatchEmergentToBackNonEmergent").addEventListener("click", callTypes("gotoEmergentgobackNonToCRMC"));
+document.getElementById("dispatchNonEmergentBackNonEmergent").addEventListener("click", callTypes("gotoNonEmergentgobackNonToCRMC"));
+document.getElementById("transferFromCRMCToHospital").addEventListener("click", callTypes("transferHospitaltoHospitalNonEmergent"));
+document.getElementById("transferFromCRMCToFacility").addEventListener("click", callTypes("transferHospitaltoOtherFacilityNonEmergent"));
+document.getElementById("liftAssistButton").addEventListener("click", callTypes("liftAssist"));
+document.getElementById("refusalEmergent").addEventListener("click", callTypes("refusalEmergent"));
+document.getElementById("refusalNonEmergent").addEventListener("click", callTypes("refusalNonEmergent"));
+document.getElementById("testing").addEventListener("click", callTypes("testAddon"));
 
-document.getElementById("dispatchEmergentToBackNonEmergent").addEventListener("click", gotoEmergentgobackNonToCRMC);
-document.getElementById("dispatchNonEmergentBackNonEmergent").addEventListener("click", gotoNonEmergentgobackNonToCRMC);
-document.getElementById("transferFromCRMCToHospital").addEventListener("click", transferHospitaltoHospitalNonEmergent);
-document.getElementById("transferFromCRMCToFacility").addEventListener("click", transferHospitaltoOtherFacilityNonEmergent);
-document.getElementById("liftAssistButton").addEventListener("click", liftAssist);
-document.getElementById("refusalEmergent").addEventListener("click", refusalEmergent);
-document.getElementById("refusalNonEmergent").addEventListener("click", refusalNonEmergent);
-document.getElementById("testing").addEventListener("click", testAddon);
+
+
+
+// document.getElementById("dispatchEmergentToBackNonEmergent").addEventListener("click", gotoEmergentgobackNonToCRMC);
+// document.getElementById("dispatchNonEmergentBackNonEmergent").addEventListener("click", gotoNonEmergentgobackNonToCRMC);
+// document.getElementById("transferFromCRMCToHospital").addEventListener("click", transferHospitaltoHospitalNonEmergent);
+// document.getElementById("transferFromCRMCToFacility").addEventListener("click", transferHospitaltoOtherFacilityNonEmergent);
+// document.getElementById("liftAssistButton").addEventListener("click", liftAssist);
+// document.getElementById("refusalEmergent").addEventListener("click", refusalEmergent);
+// document.getElementById("refusalNonEmergent").addEventListener("click", refusalNonEmergent);
+// document.getElementById("testing").addEventListener("click", testAddon);
 
 
 //Buttons for transmitting data
@@ -82,20 +93,7 @@ chrome.runtime.onConnect.addListener(function (port) {
 });
 
 
-
-//Moving popup to new window, this let's data/ports dat live when you click off of the extension.
-
-//function movetoPopUP() {
-
-//    chrome.windows.create({
-//        url: "popup.html",
-//        type: "popup",
-//        height: 500,
-//        width: 400,
-//    });
-//    window.close();
-//}
-
+//For moving the popup to the side of the screen, keeps the data connection live after imagetrend reload.
 function movetoPopUP() {
     chrome.windows.getCurrent(function (currentWindow) {
         chrome.windows.create({
@@ -112,65 +110,121 @@ function movetoPopUP() {
 
 
 
-//For sending write functions
 
-//For default calls. Go there emergent and return non-emergent
+function storeOldComments() {
 
-function gotoEmergentgobackNonToCRMC() {
+// //For sending write functions
 
-    sendToFrontend("serviceRequested", "callFill", "gotoEmergentgobackNonToCRMC");
+// //For default calls. Go there emergent and return non-emergent
+
+// function gotoEmergentgobackNonToCRMC() {
+
+//     sendToFrontend("serviceRequested", "callFill", "gotoEmergentgobackNonToCRMC");
+// }
+
+
+// //For default calls. Go there non-emergent and return non-emergent
+
+// function gotoNonEmergentgobackNonToCRMC() {
+
+//     sendToFrontend("serviceRequested", "callFill", "gotoNonEmergentgobackNonToCRMC");
+// }
+
+
+// //For transfers
+
+// function transferHospitaltoHospitalNonEmergent() {
+
+//     sendToFrontend("serviceRequested", "callFill", "transferHospitaltoHospitalNonEmergent");
+// }
+
+
+// function transferHospitaltoOtherFacilityNonEmergent() {
+
+//     sendToFrontend("serviceRequested", "callFill", "transferHospitaltoOtherFacilityNonEmergent");
+// }
+
+
+// //Lift assists
+
+// function liftAssist() {
+
+//     sendToFrontend("serviceRequested", "callFill", "liftAssist");
+// }
+
+
+// //Refusals
+
+// function refusalEmergent() {
+
+//     sendToFrontend("serviceRequested", "callFill", "refusalEmergent");
+// }
+
+// function refusalNonEmergent() {
+
+//     sendToFrontend("serviceRequested", "callFill", "refusalNonEmergent");
+// }
+
+
+// //For testing
+
+
+// function testAddon() {
+
+//     sendToFrontend("serviceRequested", "callFill", "testAddButton");
+// }
+
+
 }
 
 
-//For default calls. Go there non-emergent and return non-emergent
-
-function gotoNonEmergentgobackNonToCRMC() {
-
-    sendToFrontend("serviceRequested", "callFill", "gotoNonEmergentgobackNonToCRMC");
-}
 
 
-//For transfers
-
-function transferHospitaltoHospitalNonEmergent() {
-
-    sendToFrontend("serviceRequested", "callFill", "transferHospitaltoHospitalNonEmergent");
-}
 
 
-function transferHospitaltoOtherFacilityNonEmergent() {
-
-    sendToFrontend("serviceRequested", "callFill", "transferHospitaltoOtherFacilityNonEmergent");
-}
 
 
-//Lift assists
+function callTypes(callType) {
 
-function liftAssist() {
+    switch (callType) {
 
-    sendToFrontend("serviceRequested", "callFill", "liftAssist");
-}
+        case "testAddon":
+            sendToFrontend("serviceRequested", "callFill", "testAddButton", "", "", "", "", "");
+            break;
 
+        case "gotoEmergentgobackNonToCRMC":
+            sendToFrontend("serviceRequested", "callFill", "gotoEmergentgobackNonToCRMC", "", "", "", "", "");
+            break;
 
-//Refusals
+        case "gotoNonEmergentgobackNonToCRMC":
+            sendToFrontend("serviceRequested", "callFill", "gotoNonEmergentgobackNonToCRMC", "", "", "", "", "");
+            break;
 
-function refusalEmergent() {
+        case "transferHospitaltoHospitalNonEmergent":
+            sendToFrontend("serviceRequested", "callFill", "transferHospitaltoHospitalNonEmergent", "", "", "", "", "");
+            break;
 
-    sendToFrontend("serviceRequested", "callFill", "refusalEmergent");
-}
+        case "transferHospitaltoOtherFacilityNonEmergent":
+            sendToFrontend("serviceRequested", "callFill", "transferHospitaltoOtherFacilityNonEmergent", "", "", "", "", "");
+            break;
 
-function refusalNonEmergent() {
+        case "liftAssist":
+            sendToFrontend("serviceRequested", "callFill", "liftAssist", "", "", "", "", "");
+            break;
 
-    sendToFrontend("serviceRequested", "callFill", "refusalNonEmergent");
-}
+        case "refusalEmergent":
+            sendToFrontend("serviceRequested", "callFill", "refusalEmergent"), "", "", "", "", "";
+            break;
 
+        case "refusalNonEmergent":
+            sendToFrontend("serviceRequested", "callFill", "refusalNonEmergent"), "", "", "", "", "";
+            break;
 
-//For testing
+        default:
+            break;
 
+    }
 
-function testAddon() {
-
-    sendToFrontend("serviceRequested", "callFill", "testAddButton");
 }
 
 
@@ -179,10 +233,11 @@ function testAddon() {
 
 function sendToFrontend(messagePass, typeOfSend, referenceToData, HAN, MRN, ERN, mail, Pnumber) {
 
-    imgPort.postMessage({ message: messagePass, type: typeOfSend, reference: referenceToData, HospitalANumber: HAN, MedicalNumber: MRN, EncounterNumber: ERN, Email: mail, Phone: Pnumber, });
+    imgPort.postMessage({ message: messagePass, type: typeOfSend, reference: referenceToData, HospitalANumber: HAN, MedicalNumber: MRN, EncounterNumber: ERN, Email: mail, Phone: Pnumber });
     imgPort.onMessage.addListener(function (msg) {
     });
 }
+
 
 
 

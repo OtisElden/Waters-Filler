@@ -1,57 +1,49 @@
-//Buttons for reveal
+//Button listen for reveal, popup and passthrough
 
 document.getElementById("911Template").addEventListener("click", () => revealTemplates("911"));
 document.getElementById("transferTemplate").addEventListener("click", () => revealTemplates("transfer"));
 document.getElementById("refusalTemplate").addEventListener("click", () => revealTemplates("refusal"));
 document.getElementById("liftTemplate").addEventListener("click", () => revealTemplates("lift"));
-
-
-
-//Button for button popup
-
 document.getElementById("prepareButton").addEventListener("click", movetoPopUP);
-
-
-//Buttons for manually choosing the selection. Sorta depreciated with the new updates to contentScript.
-document.getElementById("dispatchEmergentToBackNonEmergent").addEventListener("click", callTypes("gotoEmergentgobackNonToCRMC"));
-document.getElementById("dispatchNonEmergentBackNonEmergent").addEventListener("click", callTypes("gotoNonEmergentgobackNonToCRMC"));
-document.getElementById("transferFromCRMCToHospital").addEventListener("click", callTypes("transferHospitaltoHospitalNonEmergent"));
-document.getElementById("transferFromCRMCToFacility").addEventListener("click", callTypes("transferHospitaltoOtherFacilityNonEmergent"));
-document.getElementById("liftAssistButton").addEventListener("click", callTypes("liftAssist"));
-document.getElementById("refusalEmergent").addEventListener("click", callTypes("refusalEmergent"));
-document.getElementById("refusalNonEmergent").addEventListener("click", callTypes("refusalNonEmergent"));
-document.getElementById("testing").addEventListener("click", callTypes("testAddon"));
-
-
-
-
-// document.getElementById("dispatchEmergentToBackNonEmergent").addEventListener("click", gotoEmergentgobackNonToCRMC);
-// document.getElementById("dispatchNonEmergentBackNonEmergent").addEventListener("click", gotoNonEmergentgobackNonToCRMC);
-// document.getElementById("transferFromCRMCToHospital").addEventListener("click", transferHospitaltoHospitalNonEmergent);
-// document.getElementById("transferFromCRMCToFacility").addEventListener("click", transferHospitaltoOtherFacilityNonEmergent);
-// document.getElementById("liftAssistButton").addEventListener("click", liftAssist);
-// document.getElementById("refusalEmergent").addEventListener("click", refusalEmergent);
-// document.getElementById("refusalNonEmergent").addEventListener("click", refusalNonEmergent);
-// document.getElementById("testing").addEventListener("click", testAddon);
-
-
-//Buttons for transmitting data
-
 document.getElementById("placeData").addEventListener("click", passThroughNumbers);
 
-var imgTabID;
-var imgPort
+
+//Button listen for button presses but smaller and more modular
+
+//List of button ID's
+  const popupIDNames = [
+    "emergentNonemergentBack",
+    "nonemergentNonemergentBack",
+    "transferCRMCToHospital",
+    "transferCRMCToFacility",
+    "liftAssist",
+    "refusalEmergent",
+    "refusalNonemergent",
+    "testing"
+  ];
+  
+  //Makes listening for button ID's
+  popupIDNames.forEach(eventId => {
+    document.getElementById(eventId).addEventListener("click", () => {
+      callTypes(eventId);
+    });
+  });
 
 
 
-//For getting the tabID of contentScript and connecting popup.js to contentScript
+//For connecting to the contentScript
+  
+//Stores variable globally for other functions, I know, I know... but it works.
+var imagetrendTabID;
+var imagetrendConnectionPort
 
+//This listens for the message from the contentScript and assigns values to the variables above.
 chrome.runtime.onMessage.addListener((request, sender) => {
 
     if (request.message == "GrabTabID") {
 
-        imgTabID = sender.tab.id;
-        imgPort = chrome.tabs.connect(imgTabID, { name: "extensionPassthrough" });
+        imagetrendTabID = sender.tab.id;
+        imagetrendConnectionPort = chrome.tabs.connect(imagetrendTabID, { name: "extensionPassthrough" });
 
         console.log("Connected to content script!")
     }
@@ -59,9 +51,9 @@ chrome.runtime.onMessage.addListener((request, sender) => {
 );
 
 
+//For recieving messages from the content script. Might delete later due to no use since no data is received. Decpricated.
 
 //For opening the port from contentScript and grabbing messages sent from contentScript
-
 chrome.runtime.onConnect.addListener(function (port) {
 
     port.onMessage.addListener(function (msg) {
@@ -109,115 +101,41 @@ function movetoPopUP() {
 }
 
 
-
-
-function storeOldComments() {
-
-// //For sending write functions
-
-// //For default calls. Go there emergent and return non-emergent
-
-// function gotoEmergentgobackNonToCRMC() {
-
-//     sendToFrontend("serviceRequested", "callFill", "gotoEmergentgobackNonToCRMC");
-// }
-
-
-// //For default calls. Go there non-emergent and return non-emergent
-
-// function gotoNonEmergentgobackNonToCRMC() {
-
-//     sendToFrontend("serviceRequested", "callFill", "gotoNonEmergentgobackNonToCRMC");
-// }
-
-
-// //For transfers
-
-// function transferHospitaltoHospitalNonEmergent() {
-
-//     sendToFrontend("serviceRequested", "callFill", "transferHospitaltoHospitalNonEmergent");
-// }
-
-
-// function transferHospitaltoOtherFacilityNonEmergent() {
-
-//     sendToFrontend("serviceRequested", "callFill", "transferHospitaltoOtherFacilityNonEmergent");
-// }
-
-
-// //Lift assists
-
-// function liftAssist() {
-
-//     sendToFrontend("serviceRequested", "callFill", "liftAssist");
-// }
-
-
-// //Refusals
-
-// function refusalEmergent() {
-
-//     sendToFrontend("serviceRequested", "callFill", "refusalEmergent");
-// }
-
-// function refusalNonEmergent() {
-
-//     sendToFrontend("serviceRequested", "callFill", "refusalNonEmergent");
-// }
-
-
-// //For testing
-
-
-// function testAddon() {
-
-//     sendToFrontend("serviceRequested", "callFill", "testAddButton");
-// }
-
-
-}
-
-
-
-
-
-
-
-
+//For manually calling the button functions, sorta depreciated with the new updates to contentScript.
 function callTypes(callType) {
 
     switch (callType) {
 
-        case "testAddon":
-            sendToFrontend("serviceRequested", "callFill", "testAddButton", "", "", "", "", "");
+        case "testing":
+            sendToFrontend("serviceRequested", "callFill", "testAddButton");
             break;
 
-        case "gotoEmergentgobackNonToCRMC":
-            sendToFrontend("serviceRequested", "callFill", "gotoEmergentgobackNonToCRMC", "", "", "", "", "");
+        case "emergentNonemergentBack":
+            sendToFrontend("serviceRequested", "callFill", "gotoEmergentgobackNonToCRMC");
             break;
 
-        case "gotoNonEmergentgobackNonToCRMC":
-            sendToFrontend("serviceRequested", "callFill", "gotoNonEmergentgobackNonToCRMC", "", "", "", "", "");
+        case "nonemergentNonemergentBack":
+            sendToFrontend("serviceRequested", "callFill", "gotoNonEmergentgobackNonToCRMC");
             break;
 
-        case "transferHospitaltoHospitalNonEmergent":
-            sendToFrontend("serviceRequested", "callFill", "transferHospitaltoHospitalNonEmergent", "", "", "", "", "");
+        case "transferCRMCToHospital":
+            sendToFrontend("serviceRequested", "callFill", "transferHospitaltoHospitalNonEmergent");
             break;
 
-        case "transferHospitaltoOtherFacilityNonEmergent":
-            sendToFrontend("serviceRequested", "callFill", "transferHospitaltoOtherFacilityNonEmergent", "", "", "", "", "");
+        case "transferCRMCToFacility":
+            sendToFrontend("serviceRequested", "callFill", "transferHospitaltoOtherFacilityNonEmergent");
             break;
 
         case "liftAssist":
-            sendToFrontend("serviceRequested", "callFill", "liftAssist", "", "", "", "", "");
+            sendToFrontend("serviceRequested", "callFill", "liftAssist");
             break;
 
         case "refusalEmergent":
-            sendToFrontend("serviceRequested", "callFill", "refusalEmergent"), "", "", "", "", "";
+            sendToFrontend("serviceRequested", "callFill", "refusalEmergent");
             break;
 
-        case "refusalNonEmergent":
-            sendToFrontend("serviceRequested", "callFill", "refusalNonEmergent"), "", "", "", "", "";
+        case "refusalNonemergent":
+            sendToFrontend("serviceRequested", "callFill", "refusalNonEmergent");
             break;
 
         default:
@@ -228,20 +146,16 @@ function callTypes(callType) {
 }
 
 
-
 //For Sending messages to the contentScript, must have an open port using prepare first! eg. sendToFrontend("whatever", "reload");
+
+//POSSIBLE UPDATE. Might look into JSON data to send over instead of this way.
 
 function sendToFrontend(messagePass, typeOfSend, referenceToData, HAN, MRN, ERN, mail, Pnumber) {
 
-    imgPort.postMessage({ message: messagePass, type: typeOfSend, reference: referenceToData, HospitalANumber: HAN, MedicalNumber: MRN, EncounterNumber: ERN, Email: mail, Phone: Pnumber });
-    imgPort.onMessage.addListener(function (msg) {
+    imagetrendConnectionPort.postMessage({ message: messagePass, type: typeOfSend, reference: referenceToData, HospitalANumber: HAN, MedicalNumber: MRN, EncounterNumber: ERN, Email: mail, Phone: Pnumber });
+    imagetrendConnectionPort.onMessage.addListener(function (msg) {
     });
 }
-
-
-
-
-
 
 
 //For revealing templates, if you add more please place functions here to reveal.
@@ -277,7 +191,10 @@ function revealTemplates(typeOfTemplate) {
 }
 
 
+//The start of OCR scanning for face sheets. Currently manual entry is the only option
+//Will have to consult with legal department before implementing OCR scanning.
 
+//Grabs data from popup and pushes through with sendToFrontend
 function passThroughNumbers() {
 
     let HAN = document.getElementById('inputHAN').value;
@@ -288,5 +205,5 @@ function passThroughNumbers() {
 
 
 
-    sendToFrontend("serviceRequested", "infoFill", "passThrough" , HAN, MRN, EncounterNumber, Email, Phone);
+    sendToFrontend("serviceRequested", "infoFill", "" , HAN, MRN, EncounterNumber, Email, Phone);
 }

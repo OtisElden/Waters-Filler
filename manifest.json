@@ -16,13 +16,16 @@
   "content_scripts": [
     {
       "matches": [ "https://wyoming.imagetrendelite.com/*" ],
-      "js": [ "contentScript.js" ]
+      "js": [ "contentScript.js", "tesseractContentScript.js", "tesseractJS/scripts/tesseract.min.js" ]
     }
   ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  },
 
   "web_accessible_resources": [
     {
-      "resources": [ "suggestions.json" ],
+      "resources": [ "suggestions.json", "tesseractJS/scripts/*", "tesseractJS/images/*" ],
       "matches": [ "https://wyoming.imagetrendelite.com/*" ]
     }
   ]

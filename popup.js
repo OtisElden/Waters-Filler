@@ -241,44 +241,32 @@ function passThroughNumbers() {
 
 
 
-document.getElementById("ocrButton").addEventListener("click", () => ocrImage());
+// document.getElementById("ocrButton").addEventListener("click", () => ocrImage());
 
 
 
-//Actually runs the OCR, not working yet.
-async function ocrImage(worker) { 
 
-    await createTesseractWorker();
-
-    let file = chrome.runtime.getURL("tesseractJS/images/ocrTest.png");
-
-    try {
-        const { data } = await worker.recognize(file, { rectangle: true });
-        console.log("text:", data);
-    } catch (error) {
-        console.error("Error while processing image:", error);
-    }
-}
-
-
-
-/*Creates the worker for tesseractJS, not working yet.*/
-function createTesseractWorker() {
-
-    try {
-        const worker = Tesseract.createWorker({
-
-            workerPath: chrome.runtime.getURL("tesseractJS/scripts/tesseract.js@v4.0.3_dist_worker.min.js"),
-            corePath: chrome.runtime.getURL("tesseractJS/scripts/tesseract.js-core@4.0.3_tesseract-core-simd.wasm.js"),
-            langPath: chrome.runtime.getURL("tesseractJS/scripts/languages/eng.traineddata.gz")
-        });
-
-        //await worker.loadLanguage("eng"); // You can replace "eng" with your desired language code.
-        //await worker.initialize("eng");
-
-        return worker;
-    } catch (error) {
-        console.error("Error creating Tesseract.js worker:", error);
-        throw error;
-    }
-}
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('tessServiceWorker.js')
+      .then(registration => {
+        console.log('Service Worker registered with scope:', registration.scope);
+        const tesseractWorker = new Worker(chrome.runtime.getURL('tesseractWebWorker.js'));
+  
+        tesseractWorker.onmessage = function(e) {
+          const { status, text } = e.data;
+          if (status === 'initialized') {
+            console.log('Tesseract Worker Initialized');
+          } else if (status === 'recognized') {
+            console.log('Recognized Text:', text);
+          }
+        };
+  
+        tesseractWorker.postMessage({ action: 'initialize' });
+      })
+      .catch(error => {
+        console.error('Service Worker registration failed:', error);
+      });
+  } else {
+    console.error('Service Workers are not supported in this browser.');
+  }
+  

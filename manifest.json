@@ -1,32 +1,33 @@
 {
   "manifest_version": 3,
   "name": "Waters filler",
-  "description": "Designed to auto fill temmplates and values for narritive",
+  "description": "Designed to auto fill templates and values for narrative",
   "version": "1.3.1",
-
   "icons": {
-
     "16": "WHITE.png"
   },
-
   "action": {
     "default_popup": "popup.html"
   },
-
   "content_scripts": [
     {
-      "matches": [ "https://wyoming.imagetrendelite.com/*" ],
-      "js": [ "contentScript.js", "tesseractContentScript.js", "tesseractJS/scripts/tesseract.min.js" ]
+      "matches": ["https://wyoming.imagetrendelite.com/*"],
+      "js": ["contentScript.js", "tesseractJS/scripts/tesseract.min.js"]
     }
   ],
-  "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self';"
+  "background": {
+    "service_worker": "tessServiceWorker.js"
   },
-
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; worker-src 'self';"
+  },
   "web_accessible_resources": [
     {
-      "resources": [ "suggestions.json", "tesseractJS/scripts/*", "tesseractJS/images/*" ],
-      "matches": [ "https://wyoming.imagetrendelite.com/*" ]
+      "resources": ["suggestions.json", "tesseractJS/*", "tesseractWebWorker.js", "tessServiceWorker.js"],  
+      "matches": [
+        "https://wyoming.imagetrendelite.com/*",
+        "chrome-extension://jofaidkgchakjhlbndfpejjehnalhhbp/*"
+      ]
     }
   ]
-} 
+}

@@ -407,7 +407,7 @@ function transferFromCRMCNonEmergentToFacility() {
 }
 
 
-function liftAssist() { //This is not done, just copy pasted. Still need to go through and add the actuall button clicks.
+function liftAssist() {
 
     press("menu", ["Start Up"]);
 
@@ -604,7 +604,7 @@ function press(typeOfClick, arrayToPassIn) {
 }
 
 
-
+//Similar to buttonClicker, however will type inside boxes instead of hitting a button or number.
 
 function typeInBoxes(id, valueToWrite) {
 
@@ -629,6 +629,8 @@ function typeInBoxes(id, valueToWrite) {
 
 
 //For sending data to the extension, specify the message and type of message in the passthrough values! eg. sendToExt("whatever", "reload");
+//Deprecated, MIGHT DELETE LATER. NO FUNCTIONS USE AND HAVE NO IDEA WHAT DATA TO SEND BACK.
+//Origional idea was to grab all the menu stuffs and put it on one page instead of multiple pages.
 
 function passToExt(messagePass, typeOfSend, referenceToData) {
 
@@ -641,13 +643,7 @@ function passToExt(messagePass, typeOfSend, referenceToData) {
 }
 
 
-
-
-
-
-
-
-
+//Recieves data from popup.html and places then, similar to buttonClicker
 
 function addMiscValues(HospitalANumber, MedicalNumber, EncounterNumber, Email, Phone) {
 
@@ -825,14 +821,21 @@ function textInput() {
 
 
 //Function here that takes words written by the user and searches each json entry for those key words. Returns an array of possible suggestions for the user.
+//THIS IS MY FAVORITE PART OF THE EXTENSION. Takes the current words typed in the sentence and matches them to...
+//some strings stored in an array then calculates the distance between user string and the array strings...
+//Because we only take the strings that contain the words already we can cut down procesing by quite a bit...
+//Unfortunately this wont work with typos, might look into later but for now it works well enough!
+
 function evaluateString(currentString) {
     // Have already preloaded jsonData and it contains the array of suggestions
     const compareArray = jsonData;
-    const inputWords = currentString.split(/\s+/); // Split the currentString into words
+
+    //Split the currentString into words
+    const inputWords = currentString.split(/\s+/);
 
     console.log(currentString);
 
-    // Define a function to calculate the Levenshtein distance between two strings
+    //Levenshtein distance between two strings
     function levenshteinDistance(str1, str2) {
         const m = str1.length;
         const n = str2.length;
@@ -856,7 +859,7 @@ function evaluateString(currentString) {
         return dp[m][n];
     }
 
-    // Search through each entry in the JSON array and return the positions that contain matching words
+    //Search through each entry in the JSON array and return the array positions that contain matching words
     const positionArray = compareArray
         .map((sentence, index) => {
             const words = sentence.split(/\s+/);
@@ -865,17 +868,17 @@ function evaluateString(currentString) {
         })
         .filter(item => item.matchingWords.length === inputWords.length); // Check if all input words are within the same JSON entry
 
-    // Calculate Levenshtein distance for each matching position
+    //Calculate Levenshtein distance for each matching array position
     const suggestionList = positionArray.map(item => {
         const sentence = compareArray[item.index];
         const distance = levenshteinDistance(currentString, sentence);
         return { index: item.index, distance, sentence };
     });
 
-    // Sort the suggestions by distance (the lower the distance, the better the match)
+    //Sort the array pposition of suggestions by distance (the lower the distance, the better the match)
     suggestionList.sort((a, b) => a.distance - b.distance);
 
-    // Extract and return the top suggestions
+    //Extract and return the top suggestions
     const topSuggestions = suggestionList.slice(0, 5).map(item => item.sentence);
 
     console.log(topSuggestions);
@@ -898,15 +901,17 @@ function handleTabKey(textField, topSuggestions) {
                     const topSuggestion = suggestions[0].textContent;
                     const cursorPosition = textField.selectionStart;
 
-                    // Find the last period before the cursor position
+                    //Gets last period
                     const textBeforeCursor = textField.value.substring(0, cursorPosition);
                     const sentenceStart = textBeforeCursor.lastIndexOf('.');
 
-                    // Construct the updated text by adding a period and the suggestion
+                    //Adds a space and period after the last period to compelte the sentance automatically.
+                    //Might update to watch for double spaces being added...
+                    //Something like (if period exists and next character is a space then dont add space)
                     const updatedText = textBeforeCursor.substring(0, sentenceStart + 1) + ' ' + topSuggestion + '. ' + textField.value.substring(cursorPosition);
                     textField.value = updatedText;
 
-                    // Set the selection to the end of the inserted suggestion
+                    //Set the selection to the end of the inserted suggestion
                     const newCursorPosition = sentenceStart + topSuggestion.length + 3; // +3 for the added space and two periods
                     textField.selectionStart = newCursorPosition;
                     textField.selectionEnd = newCursorPosition;
@@ -923,6 +928,8 @@ function handleTabKey(textField, topSuggestions) {
 
 
 
+//Writes out the sugesstions underneath the narritive field. Tried to add as a floating box with no effect...
+//Imagetrend is just really hard to render someting on the page with how they made it.
 
 function suggestionBox(topSuggestions) {
     const textField = document.getElementById("80724");

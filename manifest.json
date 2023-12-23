@@ -12,17 +12,24 @@
     "default_popup": "popup.html"
   },
 
+  "host_permissions": ["https://wyoming.imagetrendelite.com/*"],
+
+  "content_security_policy": {
+		"extension_pages": "script-src 'self'; object-src 'self';"
+	},
+
   "content_scripts": [
     {
       "matches": [ "https://wyoming.imagetrendelite.com/*" ],
-      "js": [ "contentScript.js" ]
+      "js": [ "contentScript.js", "scripts/tesseract.min.js" ]
     }
   ],
 
   "web_accessible_resources": [
     {
-      "resources": [ "suggestions.json" ],
-      "matches": [ "https://wyoming.imagetrendelite.com/*" ]
+      "resources": [ "suggestions.json", "scripts/*"],
+      "matches": [ "https://wyoming.imagetrendelite.com/*" ],
+      "use_dynamic_url": true
     }
   ]
 } 

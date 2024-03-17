@@ -527,31 +527,31 @@ function typeInBoxes(id, valueToWrite) {
 function buttonWatcher() {
 
     const functionArray = [callEmergentCRMCNonEmergent, callNonEmergentCRMCNonEmergent, transferFromCRMCNonEmergentToHospital, transferFromCRMCNonEmergentToFacility, liftAssist, refusalEmergent, refusalNonEmergent];
-const buttonNames = ["Emergent CRMC Non-Emergent", "Non-Emergent CRMC Non-Emergent", "Transfer From CRMC Non-Emergent to Hospital", "Transfer From CRMC Non-Emergent to Facility", "Lift Assist", "Refusal Emergent", "Refusal Non-Emergent"];
+    const buttonNames = ["Emergent to CRMC Non-Emergent", "Non-Emergent to CRMC Non-Emergent", "Transfer From CRMC Non-Emergent to Hospital", "Transfer From CRMC Non-Emergent to Facility", "Lift Assist", "Refusal Emergent", "Refusal Non-Emergent"];
 
-function addButtons() {
-    const testGrabButton = document.querySelector(".button-control");
-    const buttonParent = testGrabButton.parentElement;
+    function addButtons() {
+        const testGrabButton = document.querySelector(".button-control");
+        const buttonParent = testGrabButton.parentElement;
 
-    // Ensure functionArray and buttonNames have the same length
-    if (functionArray.length !== buttonNames.length) {
-        console.error("functionArray and buttonNames arrays must be of the same length.");
-        return;
+        // Ensure functionArray and buttonNames have the same length
+        if (functionArray.length !== buttonNames.length) {
+            console.error("functionArray and buttonNames arrays must be of the same length.");
+            return;
+        }
+
+        for (let i = 0; i < functionArray.length; i++) {
+            const fn = functionArray[i];
+            const buttonName = buttonNames[i]; // Use the corresponding button name
+
+            const newButton = document.createElement('button');
+            newButton.className = testGrabButton.className;
+            newButton.innerHTML = buttonName; // Set the button's innerHTML to the human-friendly name
+            newButton.style.marginLeft = "15px";
+            newButton.style.marginTop = "5px";
+            newButton.onclick = fn;
+            buttonParent.appendChild(newButton);
+        }
     }
-
-    for (let i = 0; i < functionArray.length; i++) {
-        const fn = functionArray[i];
-        const buttonName = buttonNames[i]; // Use the corresponding button name
-
-        const newButton = document.createElement('button');
-        newButton.className = testGrabButton.className;
-        newButton.innerHTML = buttonName; // Set the button's innerHTML to the human-friendly name
-        newButton.style.marginLeft = "15px";
-        newButton.style.marginTop = "5px";
-        newButton.onclick = fn;
-        buttonParent.appendChild(newButton);
-    }
-}
 
 
     //This is the checker, looks for the field and then DC's.

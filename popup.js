@@ -5,32 +5,9 @@ document.getElementById("transferTemplate").addEventListener("click", () => reve
 document.getElementById("refusalTemplate").addEventListener("click", () => revealTemplates("refusal"));
 document.getElementById("liftTemplate").addEventListener("click", () => revealTemplates("lift"));
 document.getElementById("prepareButton").addEventListener("click", movetoPopUP);
-document.getElementById("placeData").addEventListener("click", passThroughNumbers);
 
 
-//Button listen for button presses but smaller and more modular
-
-//List of button ID's
-  const popupIDNames = [
-    "emergentNonemergentBack",
-    "nonemergentNonemergentBack",
-    "transferCRMCToHospital",
-    "transferCRMCToFacility",
-    "liftAssist",
-    "refusalEmergent",
-    "refusalNonemergent",
-    "testing"
-  ];
-  
-  //Makes listening for button ID's
-  popupIDNames.forEach(eventId => {
-    document.getElementById(eventId).addEventListener("click", () => {
-      callTypes(eventId);
-    });
-  });
-
-
-//For moving the popup to the side of the screen, keeps the data connection live after imagetrend reload.
+//For moving the popup to the side of the screen. Sorta depreciated but keeping it for future use.
 function movetoPopUP() {
     chrome.windows.getCurrent(function (currentWindow) {
         chrome.windows.create({
@@ -44,10 +21,6 @@ function movetoPopUP() {
         window.close();
     });
 }
-
-
-
-
 
 
 

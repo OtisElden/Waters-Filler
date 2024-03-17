@@ -573,3 +573,88 @@ function buttonWatcher() {
 
 //Starts the button watcher
 buttonWatcher();
+
+
+// Check for narritive field
+fieldWatcher();
+
+function fieldWatcher() {
+    // This is the checker, looks for the field and then starts textInput.
+    function checkForField() {
+        const foundField = document.getElementById("80724");
+
+        if (foundField) {
+            console.log("found field");
+            shortcutKeys();
+            
+            clearInterval(intervalID); // Stop the interval once the field is found
+        }
+    }
+
+    // Set up the interval to check every 1 second
+    const intervalID = setInterval(checkForField, 1000);
+}
+
+
+//Stores keyboard shortcuts
+function shortcutKeys() {
+
+    let currentStringField = document.getElementById("80724");
+
+    currentStringField.addEventListener("keydown", function (event) {
+
+        //Updates/grabs keypress
+        const keyPressed = event.key;
+
+        //Moves text caret to the next DDS mark and hightlights it
+        if (event.key === "Tab") {
+
+            event.preventDefault();
+
+            const [ddsStart, ddsEnd] = searchDDS(currentStringField);
+
+            if (ddsStart !== -1 && ddsEnd !== -1) {
+                currentStringField.setSelectionRange(ddsStart, ddsEnd);
+            }
+        }
+})}
+
+
+//Searches strings for DDS mark and retusn the position of the DDS as well as the ending position of that word
+function searchDDS(currentStringField) {
+
+    let DDS = currentStringField.value.search("DDS");
+
+    if (DDS !== -1) {
+
+        let posData = findEndOfWord(currentStringField.value, DDS);
+
+        return [DDS, posData];
+
+    } else {
+
+        return [-1, -1];
+    }
+
+    function findEndOfWord(text, startIndex) {
+
+        //Initialize variables to store the end position and the characters to check for
+        let endPosition = startIndex;
+        const validChars = [' ', '.','\n'];
+
+        //Iterate from the startIndex to the end of the string
+        while (endPosition < text.length) {
+            const currentChar = text[endPosition];
+
+            //Check if the current character is a space or a period
+            if (validChars.includes(currentChar)) {
+                break; // Stop when a space or period is found
+            }
+
+            //Move to the next character
+            endPosition++;
+        }
+
+        return endPosition;
+    }
+}

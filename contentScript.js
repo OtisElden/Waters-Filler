@@ -17,7 +17,6 @@ function callEmergentCRMCNonEmergent() {
         press("dropdown", startTabDropdowns);
         press("button", startTabButtons);
 
-
         press("menu", ["Response"]);
 
         press("menu", ["Response Info"]);
@@ -34,7 +33,6 @@ function callEmergentCRMCNonEmergent() {
 
         press("dropdown secondary", ["Lights and Sirens"])
 
-
         press("menu", ["Transport"]);
 
         press("menu", ["Transport Info"]);
@@ -47,13 +45,7 @@ function callEmergentCRMCNonEmergent() {
 
         press("dropdown", ["Ground-Ambulance"]);
 
-        let clickOnNumMenu = document.querySelector("#a43e6fca-b6bd-5c15-b9f4-9afb7773582b > div.input-wrapper > div.interceptor-wrapper > div");
-        clickOnNumMenu.click();
-
-        press("numericalButtons", ["1"])
-
         press("button", ["Lower Acuity (Green)"])
-
 
         press("menu", ["Disposition Destination"]);
 
@@ -66,7 +58,6 @@ function callEmergentCRMCNonEmergent() {
         press("dropdown", ["Cheyenne Regional Medical Center"]);
 
         press("dropdown secondary", ["Closest Facility"]);
-
 
         press("menu", ["Signatures"]);
 
@@ -128,13 +119,7 @@ function callNonEmergentCRMCNonEmergent() {
 
         press("dropdown", ["Ground-Ambulance"]);
 
-        let clickOnNumMenu = document.querySelector("#a43e6fca-b6bd-5c15-b9f4-9afb7773582b > div.input-wrapper > div.interceptor-wrapper > div");
-        clickOnNumMenu.click();
-
-        press("numericalButtons", ["1"])
-
         press("button", ["Lower Acuity (Green)"])
-
 
         press("menu", ["Disposition Destination"]);
 
@@ -212,11 +197,6 @@ function transferFromCRMCNonEmergentToHospital() {
 
         press("dropdown", ["Ground-Ambulance"]);
 
-        let clickOnNumMenu = document.querySelector("#a43e6fca-b6bd-5c15-b9f4-9afb7773582b > div.input-wrapper > div.interceptor-wrapper > div");
-        clickOnNumMenu.click();
-
-        press("numericalButtons", ["1"])
-
         press("button", ["Lower Acuity (Green)"])
 
 
@@ -282,11 +262,6 @@ function transferFromCRMCNonEmergentToFacility() {
     function transportInfoTab() {
 
         press("dropdown", ["Ground-Ambulance"]);
-
-        let clickOnNumMenu = document.querySelector("#a43e6fca-b6bd-5c15-b9f4-9afb7773582b > div.input-wrapper > div.interceptor-wrapper > div");
-        clickOnNumMenu.click();
-
-        press("numericalButtons", ["1"])
 
         press("button", ["Lower Acuity (Green)"])
 

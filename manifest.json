@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Waters filler",
   "description": "Designed to auto fill temmplates and values for narritive",
-  "version": "1.4",
+  "version": "1.4.1",
 
   "icons": {
     "16": "WHITE.png"

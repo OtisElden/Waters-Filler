@@ -633,3 +633,37 @@ function searchDDS(currentStringField) {
         return endPosition;
     }
 }
+
+
+//Moves to the next needed field
+
+function moveToNeededField() {
+
+    //Insert the keypress event listener to the document
+    document.addEventListener("keydown", function (keypress) {
+
+        //Grabs the current key
+        const keyPressed = keypress.key;
+
+        //Key pressed
+        if (keypress.key === "/" && keypress.ctrlKey) {
+
+            //Prevents the default action of the keypress
+            keypress.preventDefault();
+
+            //Clicks the validation menu
+            const validationMenu = document.getElementsByClassName("validationLT100")[0];
+            validationMenu.click();
+
+
+            //Clicks the first validation button
+            let liButton = document.getElementById("validation-menu").getElementsByTagName("li")[0].querySelector(".go-to-button");
+            liButton.click();
+
+            console.log("Moved to next field!")
+
+        }
+    });
+}
+
+moveToNeededField();

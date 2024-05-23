@@ -592,6 +592,22 @@ function shortcutKeys() {
                 currentStringField.setSelectionRange(ddsStart, ddsEnd);
             }
         }
+
+        //Highlights everything from the current position to the next period, new line, or colon.
+        if (event.ctrlKey && event.key === "p") {
+
+            event.preventDefault();
+
+            let text = currentStringField.value;
+            let startIndex = currentStringField.selectionStart;
+
+            let periodPosition = text.slice(startIndex).search(/[.\n:]/);
+
+            if (periodPosition !== -1) {
+                let endPosition = startIndex + periodPosition + 1;
+                currentStringField.setSelectionRange(startIndex, endPosition);
+            }
+        }
 })}
 
 
